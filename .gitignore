@@ -1,0 +1,5 @@
+## 忽略一些文件
+.idea
+.gradle
+build
+out

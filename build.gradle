@@ -1,0 +1,34 @@
+group 'JXLS-Learning'
+version '1.0-SNAPSHOT'
+
+// 应用的插件（java用于打jar包，war用于web项目打war包）
+// 可在Gradle-Tasks-build中找到相应的插件启动程序
+apply plugin: 'java'
+apply plugin: 'war'
+
+//声明java源码的版本
+sourceCompatibility = 1.8
+
+
+// 使用阿里云服务器进行仓库管理
+repositories {
+    // 先从url中下载jar若没有找到，则在artifactUrls中寻找
+    maven {
+        url "http://maven.aliyun.com/nexus/content/groups/public/"
+        artifactUrls "http://central.maven.org/maven2/"
+    }
+}
+
+
+// 依赖管理
+dependencies {
+    // 依赖的jar包
+    compile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+
+    // springboot依赖的jar包
+    //使用 Controller 的时候需要引入 web 包
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.0.4.RELEASE'
+    // 热部署需要使用devtools
+    compile group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '2.0.4.RELEASE'
+}
