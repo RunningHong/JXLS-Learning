@@ -22,13 +22,17 @@ repositories {
 
 // 依赖管理
 dependencies {
-    // 依赖的jar包
-    compile group: 'junit', name: 'junit', version: '4.12'
-    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-
     // springboot依赖的jar包
     //使用 Controller 的时候需要引入 web 包
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.0.4.RELEASE'
     // 热部署需要使用devtools
     compile group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '2.0.4.RELEASE'
+
+
+    // 依赖的jar包
+    compile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    compile group: 'org.jxls', name: 'jxls', version: '2.3.0'
+    compile group: 'org.jxls', name: 'jxls-poi', version: '1.0.9'
+    compile group: 'org.jxls', name: 'jxls-jexcel', version: '1.0.6'
 }
