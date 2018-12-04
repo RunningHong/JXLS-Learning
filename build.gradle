@@ -38,8 +38,12 @@ dependencies {
     compile 'org.jxls:jxls-jexcel:1.0.7'
     compile 'org.jxls:jxls-reader:2.0.5'
 
-    compile group: 'org.apache.poi', name: 'poi', version: '3.13'
-    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.13'
-    compile group: 'org.apache.poi', name: 'poi-scratchpad', version: '3.13'
-    compile group: 'org.apache.poi', name: 'poi-ooxml-schemas', version: '3.13'
+
+    compile group: 'org.apache.poi', name: 'poi', version: '3.8'
+    compile group: 'org.apache.poi', name: 'poi-examples', version: '3.8'
+    compile group: 'org.apache.poi', name: 'poi-excelant', version: '3.8'
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.8'
+    compile group: 'org.apache.poi', name: 'poi-ooxml-schemas', version: '3.8'
+    compile group: 'org.apache.poi', name: 'poi-scratchpad', version: '3.8'
+    
 }

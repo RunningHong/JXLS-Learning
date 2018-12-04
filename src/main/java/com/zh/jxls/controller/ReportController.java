@@ -1,10 +1,12 @@
 package com.zh.jxls.controller;
 
-import com.zh.jxls.util.JxlsUtil;
+import com.zh.jxls.util.ExcelUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 报表控制器
@@ -24,7 +26,9 @@ public class ReportController {
      */
     @RequestMapping("/reportHtmlPreview")
     public void reportHtmlPreview(HttpServletResponse response) throws Exception {
-        JxlsUtil jxlsUtil = new JxlsUtil();
-        jxlsUtil.generateHtml(null, response);
+        ExcelUtil excelUtil = new ExcelUtil();
+
+        Map<String, Object> params = new HashMap<>();
+        excelUtil.generateHtml(params, response);
     }
 }
