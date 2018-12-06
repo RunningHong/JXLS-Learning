@@ -28,4 +28,18 @@ public class FileUtil {
         String fileType = fileName.substring(fileName.lastIndexOf("."));
         return fileType;
     }
+
+    /**
+     * 生成文件路径
+     * @Author RunningHong
+     * @Date 2018/12/6 10:54
+     * @Param filePath需要生成的路径
+     * @return
+     */
+    public static void makeFilePath(String filePath) {
+        File filePathFile = new File(filePath);
+        if (!filePathFile.exists()) {
+            filePathFile.mkdirs();
+        }
+    }
 }
