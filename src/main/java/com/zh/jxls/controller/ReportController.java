@@ -29,11 +29,10 @@ public class ReportController {
      */
     @RequestMapping("/reportHtmlPreview")
     public void reportHtmlPreview(HttpServletResponse response) throws Exception {
-        testGenerateExcelToFile();
+        // testGenerateExcelToFile();
 
-        ExcelUtil excelUtil = new ExcelUtil();
         Map<String, Object> params = new HashMap<>();
-        excelUtil.generateHtmlToResponse(params, response);
+        ExcelUtil.generateHtmlToResponse(params, response);
 
     }
 

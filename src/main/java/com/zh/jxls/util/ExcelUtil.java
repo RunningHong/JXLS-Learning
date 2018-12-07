@@ -76,7 +76,7 @@ public class ExcelUtil {
             generateExcelToStream(params, out);
 
             // 将Excel文件流out转化为HTML，数据存储在response中
-            ExcelToHtmlUtil.excelToHtml(new ByteArrayInputStream(out.toByteArray()), response.getOutputStream());
+            ExcelToHtmlUtil.excelStreamToHtmlStreamByOpenOffice(new ByteArrayInputStream(out.toByteArray()), response.getOutputStream());
         } catch (Exception e) {
             throw new Exception("生成HTML文件出错，原因：" + e.getMessage(), e);
         }
@@ -93,10 +93,6 @@ public class ExcelUtil {
     public static void generateExcelToStream(Map<String, Object> params, OutputStream out) {
         // Excel模板文件读取位置
         File xlsTemplatePath = new File("D:\\CodeSpace\\ideaWorkspace\\JXLS-Learning\\src\\main\\resources\\templateFile\\测试报表.xls");
-
-        SimpleDateFormat sdf = new SimpleDateFormat( "MM_dd HH_mm_ss" );
-        String timeFormat = sdf.format(new Date());
-        String fileName = "temp" + timeFormat +".xls";
 
         // 生成测试数据
         List<Object> empList = generateDate();
@@ -162,7 +158,8 @@ public class ExcelUtil {
         if (pics != null) {
             for (int i = 0; i < pics.size(); i++) {
                 HSSFPictureData  picDate = (HSSFPictureData) pics.get(i);
-                String saveName = "pic" + (i+1) + new SimpleDateFormat( "_MM_dd HH_mm" ).format(new Date()) + ".jpg";
+                // String saveName = "pic" + (i+1) + new SimpleDateFormat( "_MM_dd HH_mm" ).format(new Date()) + ".jpg";
+                String saveName = "pic" + (i+1) + ".jpg";
 
                 FileOutputStream fos = new FileOutputStream(new File(picSavePath + saveName));
                 fos.write(picDate.getData());
