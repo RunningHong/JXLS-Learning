@@ -31,6 +31,24 @@ public class ExcelUtil {
     static Logger log = LoggerFactory.getLogger(ExcelUtil.class);
 
     /**
+     * 将2003Excel流转换为文件
+     * @Author RunningHong
+     * @Date 2018/12/8 13:52
+     * @Param is:2003Excel流，outFile:输出文件
+     * @return
+     */
+    public static void excelStreamToFile(InputStream is, File outFile) {
+        try {
+            HSSFWorkbook workBook = new HSSFWorkbook(is);
+            workBook.write(outFile);
+            log.info("根据Excel流转换xls成功，生成文件路径:" + outFile.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
      * 将图片的流is写入Excel的workbook
      * 图片存放于Excel新建的一个TestPicSheet钟
      * @Author RunningHong
@@ -57,6 +75,7 @@ public class ExcelUtil {
         // 往workbook中插入图片
         patriarch.createPicture(anchor, workbook.addPicture(byteArrayOut.toByteArray(),
                                                             HSSFWorkbook.PICTURE_TYPE_JPEG));
+        log.info("图片流写入xls成功");
     }
 
 
@@ -72,71 +91,31 @@ public class ExcelUtil {
             response.setContentType("text/html");
             ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-            // 读取模板文件，使用jxsl渲染，渲染后的数据存放于out中
-            generateExcelToStream(params, out);
+            // Excel模板文件读取
+            File xlsTempPath = new File("D:\\CodeSpace\\ideaWorkspace\\JXLS-Learning\\src\\main\\resources\\templateFile\\测试报表.xls");
+            InputStream tempXlsIs = new FileInputStream(xlsTempPath);
 
-            // 将Excel文件流out转化为HTML，数据存储在response中
+            // 参数处理,提供给jxls渲染模板
+            Context context = handleParams(params);
+
+            // 使用jxsl渲染，渲染后的数据存放于out中
+            JxlsHelper.getInstance().processTemplate(tempXlsIs, out, context);
+
+            // 将Excel流存储到文件
+            String saveExcelName =  "D:\\CodeSpace\\ideaWorkspace\\JXLS-Learning\\out\\generateTemp\\genTemp.xls";
+            excelStreamToFile(new ByteArrayInputStream(out.toByteArray()), new File(saveExcelName));
+
+            // 读取Excel流中的图片到指定位置
+            String picSavePath = "D:\\CodeSpace\\ideaWorkspace\\JXLS-Learning\\out\\generatePic\\";
+            ExcelUtil.generateExcelPictureToFile(new ByteArrayInputStream(out.toByteArray()), picSavePath);
+
+
+            // 使用OpenOffice将Excel文件流out转化为HTML，数据存储在response中
             ExcelToHtmlUtil.excelStreamToHtmlStreamByOpenOffice(new ByteArrayInputStream(out.toByteArray()), response.getOutputStream());
+            // 使用poi将Excel文件流out转化为HTML，数据存储在response中
+            // ExcelToHtmlUtil.excelStreamToHtmlStreamByPoi(new ByteArrayInputStream(out.toByteArray()), response.getOutputStream());
         } catch (Exception e) {
-            throw new Exception("生成HTML文件出错，原因：" + e.getMessage(), e);
-        }
-    }
-
-
-    /**
-     * 读取模板文件，使用jxsl渲染，渲染后的数据存放于out中
-     * @Author RunningHong
-     * @Date 2018/12/3 19:50
-     * @Param
-     * @return
-     */
-    public static void generateExcelToStream(Map<String, Object> params, OutputStream out) {
-        // Excel模板文件读取位置
-        File xlsTemplatePath = new File("D:\\CodeSpace\\ideaWorkspace\\JXLS-Learning\\src\\main\\resources\\templateFile\\测试报表.xls");
-
-        // 生成测试数据
-        List<Object> empList = generateDate();
-
-        // 往context中添加数据
-        Context context = new Context(params);
-        context.putVar("emps", empList);
-
-        try {
-            InputStream is = new FileInputStream(xlsTemplatePath);
-            JxlsHelper.getInstance().processTemplate(is, out, context);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 读取Excel模板文件，使用jxls渲染，生成报表Excel，存放到指定位置
-     * @Author RunningHong
-     * @Date 2018/12/4 15:36
-     * @Param xlsTemplatePath：模板文件的位置， outPath:存放生成文件的位置
-     * @return
-     */
-    public static void generateExcelToFile(File xlsTemplatePath, File outPath) {
-        // 生成临时数据
-        List<Object> empList = generateDate();
-
-        try {
-            InputStream is = new FileInputStream(xlsTemplatePath);
-            OutputStream os = new FileOutputStream(outPath);
-
-            // 往JXLS的Context中添加数据
-            Context context = new Context();
-            context.putVar("emps", empList);
-
-            // 使用JXLSHelper处理模板
-            JxlsHelper.getInstance().processTemplate(is, os, context);
-            is.close();
-            os.close();
-
-            log.info("Excel模板文件生成报表Excel文件成功！");
-            log.info("生成文件路径：" + outPath.getAbsolutePath());
-        } catch (Exception e) {
-            e.printStackTrace();
+            throw new Exception("根据模板文件生成预览HTML失败，原因：" + e.getMessage());
         }
     }
 
@@ -145,10 +124,12 @@ public class ExcelUtil {
      * 生成Excel2003文件的所有图片到指定位置
      * @Author RunningHong
      * @Date 2018/12/6 10:06
-     * @Param
+     * @Param is：Excel流信息  picSavePath：图片存放位置
      * @return
      */
-    public static void generateExcelPicToFile(HSSFWorkbook workbook, String picSavePath) throws Exception {
+    public static void generateExcelPictureToFile(InputStream is, String picSavePath) throws Exception {
+        HSSFWorkbook workbook = new HSSFWorkbook(is);
+
         File picSaveFile = new File(picSavePath);
         if (!picSaveFile.exists()) {
             picSaveFile.mkdirs();
@@ -167,6 +148,24 @@ public class ExcelUtil {
             }
         }
 
+    }
+
+    /**
+     * 处理参数，供给jxls渲染模板
+     * @Author RunningHong
+     * @Date 2018/12/8 14:31
+     * @Param
+     * @return
+     */
+    public static Context handleParams(Map<String, Object> params) {
+        // 生成测试数据
+        List<Object> empList = generateDate();
+
+        // 往context中添加数据
+        Context context = new Context(params);
+        context.putVar("emps", empList);
+
+        return context;
     }
 
     /**

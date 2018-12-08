@@ -34,14 +34,13 @@ public class ExcelToHtmlUtil {
     static Logger log = LoggerFactory.getLogger(ExcelToHtmlUtil.class);
 
     /**
-     * 将excel流通过OpenOffice转换为HTML流并放于os中
+     * 使用openOffice将excel流转换为HTML流并放于os中
      * @Author RunningHong
      * @Date 2018/12/7 17:56
      * @Param
      * @return
      */
     public static void excelStreamToHtmlStreamByOpenOffice(InputStream is, OutputStream os) {
-
         // 打开OpenOffice服务
         OpenOfficeUtil.startOpenOffice();
         OpenOfficeConnection connection = new SocketOpenOfficeConnection(8100);
@@ -51,32 +50,36 @@ public class ExcelToHtmlUtil {
             System.err.println("文件转换出错，请检查OpenOffice服务是否启动。");
         }
 
-        // 转换
+        // 转换器
         DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
 
-
+        // html格式
         DocumentFormat html = new DocumentFormat("HTML", DocumentFamily.TEXT, "text/html", "html");
         html.setExportFilter(DocumentFamily.PRESENTATION, "impress_html_Export");
         html.setExportFilter(DocumentFamily.SPREADSHEET, "HTML (StarCalc)");
         html.setExportFilter(DocumentFamily.TEXT, "HTML (StarWriter)");
 
+        // xls格式
         DocumentFormat xls = new DocumentFormat("Microsoft Excel", DocumentFamily.SPREADSHEET, "application/vnd.ms-excel", "xls");
         xls.setExportFilter(DocumentFamily.SPREADSHEET, "MS Excel 97");
 
+        // 将xls流装换为html流
         converter.convert(is, xls, os, html);
         connection.disconnect();
+
+        log.info("根据Excel模板使用OpenOffice预览HTML成功！");
     }
 
 
     /**
-     * 将Excel文件流out转化为HTML，数据存储在os中
+     * 使用poi将Excel文件流out转化为HTML，数据存储在os中
      * 使用poi
      * @Author RunningHong
      * @Date 2018/12/3 16:59
      * @Param
      * @return
      */
-    public static void excelStreamToHtml(InputStream is, OutputStream os) throws Exception {
+    public static void excelStreamToHtmlStreamByPoi(InputStream is, OutputStream os) throws Exception {
         HSSFWorkbook workbook = new HSSFWorkbook(is);
 
         ExcelToHtmlConverter excelToHtmlConverter = new ExcelToHtmlConverter(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
@@ -92,10 +95,6 @@ public class ExcelToHtmlUtil {
 
         excelToHtmlConverter.processWorkbook(workbook);
 
-        // 读取Excel文件的图片到指定位置
-        String picSavePath = "D:\\CodeSpace\\ideaWorkspace\\JXLS-Learning\\out\\generatePic\\";
-        ExcelUtil.generateExcelPicToFile(workbook, picSavePath);
-
         // 转化为HTML
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
@@ -103,13 +102,7 @@ public class ExcelToHtmlUtil {
         transformer.setOutputProperty(OutputKeys.METHOD, "html");
         transformer.transform(new DOMSource(excelToHtmlConverter.getDocument()), new StreamResult(os));
 
-        log.info("根据Excel模板预览HTML成功！");
-
-
-        // 将生成的图片Excel写出来
-        String picSaveExcelName = picSavePath + "图片Excel.xls";
-        FileOutputStream picFileOut = new FileOutputStream(picSaveExcelName);
-        workbook.write(picFileOut);
+        log.info("根据Excel模板使用POI预览HTML成功！");
     }
 
 }
