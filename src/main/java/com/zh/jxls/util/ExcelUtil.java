@@ -16,10 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 对Excel进行操作
@@ -41,7 +38,7 @@ public class ExcelUtil {
         try {
             HSSFWorkbook workBook = new HSSFWorkbook(is);
             workBook.write(outFile);
-            log.info("根据Excel流转换xls成功，生成文件路径:" + outFile.getAbsolutePath());
+            log.info("Excel流转换xls成功，生成文件路径:" + outFile.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,36 +83,37 @@ public class ExcelUtil {
      * @Param
      * @return
      */
-    public static void generateHtmlToResponse(Map<String, Object> params, HttpServletResponse response) throws Exception {
+    public static void generateHtmlToResponse(Map<String, Object> params, HttpServletResponse response) {
         try {
             response.setContentType("text/html");
             ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-            // Excel模板文件读取
-            File xlsTempPath = new File("D:\\CodeSpace\\ideaWorkspace\\JXLS-Learning\\src\\main\\resources\\templateFile\\测试报表.xls");
-            InputStream tempXlsIs = new FileInputStream(xlsTempPath);
-
             // 参数处理,提供给jxls渲染模板
             Context context = handleParams(params);
+
+            // Excel模板文件读取
+            String templateFilePath = PropertiesUtil.getPropertyFromPropertyFile("filePath.properties", "templateFilePath");
+            InputStream tempXlsIs = new FileInputStream(new File(templateFilePath));
 
             // 使用jxsl渲染，渲染后的数据存放于out中
             JxlsHelper.getInstance().processTemplate(tempXlsIs, out, context);
 
             // 将Excel流存储到文件
-            String saveExcelName =  "D:\\CodeSpace\\ideaWorkspace\\JXLS-Learning\\out\\generateTemp\\genTemp.xls";
-            excelStreamToFile(new ByteArrayInputStream(out.toByteArray()), new File(saveExcelName));
+            String saveExcelStreamToFilePath = PropertiesUtil.getPropertyFromPropertyFile("filePath.properties", "saveExcelStreamToFilePath");
+            ExcelUtil.excelStreamToFile(new ByteArrayInputStream(out.toByteArray()), new File(saveExcelStreamToFilePath));
 
             // 读取Excel流中的图片到指定位置
-            String picSavePath = "D:\\CodeSpace\\ideaWorkspace\\JXLS-Learning\\out\\generatePic\\";
-            ExcelUtil.generateExcelPictureToFile(new ByteArrayInputStream(out.toByteArray()), picSavePath);
+            String excelPictureSavePath = PropertiesUtil.getPropertyFromPropertyFile("filePath.properties", "excelPictureSavePath");
+            ExcelUtil.generateExcelPictureToFile(new ByteArrayInputStream(out.toByteArray()), excelPictureSavePath);
 
 
             // 使用OpenOffice将Excel文件流out转化为HTML，数据存储在response中
-            ExcelToHtmlUtil.excelStreamToHtmlStreamByOpenOffice(new ByteArrayInputStream(out.toByteArray()), response.getOutputStream());
+            // ExcelToHtmlUtil.excelStreamToHtmlStreamByOpenOffice(new ByteArrayInputStream(out.toByteArray()), response.getOutputStream());
             // 使用poi将Excel文件流out转化为HTML，数据存储在response中
-            // ExcelToHtmlUtil.excelStreamToHtmlStreamByPoi(new ByteArrayInputStream(out.toByteArray()), response.getOutputStream());
+            ExcelToHtmlUtil.excelStreamToHtmlStreamByPoi(new ByteArrayInputStream(out.toByteArray()), response.getOutputStream());
         } catch (Exception e) {
-            throw new Exception("根据模板文件生成预览HTML失败，原因：" + e.getMessage());
+            log.error("根据Excel模板文件生成预览HTML失败");
+            e.printStackTrace();
         }
     }
 
@@ -147,7 +145,6 @@ public class ExcelUtil {
                 fos.close();
             }
         }
-
     }
 
     /**
@@ -178,10 +175,10 @@ public class ExcelUtil {
     public static List<Object> generateDate() {
         List<Object> list = new LinkedList<>();
 
-        String time = new SimpleDateFormat( "(MM_dd HH_mm)" ).format(new Date());
+        String time = new SimpleDateFormat( "(YY_MM_dd HH_mm_ss)" ).format(new Date());
         for (int i = 0; i < 10; i++) {
             Employee emp = new Employee();
-            emp.setName("测试人员" + i);
+            emp.setName("测试人员" + i + "\r\n" + "iiiiiiiiiiiiiiiiii");
             emp.setAge(i+20);
             emp.setCode(100 + i + "");
             emp.setLinkTel(time);
@@ -190,6 +187,5 @@ public class ExcelUtil {
         }
         return list;
     }
-
 
 }

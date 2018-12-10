@@ -27,7 +27,9 @@ import java.io.*;
 import java.util.List;
 
 /**
- *
+ * Excel转换为html工具类
+ * @Author RunningHong
+ * @Date 2018/12/8 15:32
  */
 public class ExcelToHtmlUtil {
 
@@ -47,7 +49,7 @@ public class ExcelToHtmlUtil {
         try {
             connection.connect();
         } catch (Exception e) {
-            System.err.println("文件转换出错，请检查OpenOffice服务是否启动。");
+            System.err.println("OpenOffice文件转换出错，请检查OpenOffice服务是否启动。");
         }
 
         // 转换器
@@ -82,7 +84,10 @@ public class ExcelToHtmlUtil {
     public static void excelStreamToHtmlStreamByPoi(InputStream is, OutputStream os) throws Exception {
         HSSFWorkbook workbook = new HSSFWorkbook(is);
 
-        ExcelToHtmlConverter excelToHtmlConverter = new ExcelToHtmlConverter(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
+        // 修改了ExcelToHtmlConverter的一点内容
+        ExcelToHtmlConverterModify excelToHtmlConverter = new ExcelToHtmlConverterModify(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
+        // ExcelToHtmlConverter excelToHtmlConverter = new ExcelToHtmlConverter(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
+
 
         // 去掉列号(Excel的A B C D列号)
         excelToHtmlConverter.setOutputColumnHeaders(false);

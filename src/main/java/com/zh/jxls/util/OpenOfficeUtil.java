@@ -1,10 +1,15 @@
 package com.zh.jxls.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author RunningHong
  * @create 2018-12-07 17:00
  */
 public class OpenOfficeUtil {
+
+    static Logger log = LoggerFactory.getLogger(OpenOfficeUtil.class);
 
     // OpenOffice的安装目录
     private static String OpenOffice_HOME = "C:\\Program Files (x86)\\OpenOffice 4\\program\\";
@@ -26,8 +31,7 @@ public class OpenOfficeUtil {
             if (openOfficeProcess == null) {
                 openOfficeProcess = Runtime.getRuntime().exec(fullCommand);
             }
-
-            System.out.println("OpenOffice开启成功");
+            log.info("OpenOffice开启成功");
         } catch (Exception e) {
             e.printStackTrace();
         }

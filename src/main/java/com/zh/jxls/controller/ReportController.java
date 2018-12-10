@@ -25,7 +25,7 @@ public class ReportController {
      * @return
      */
     @RequestMapping("/reportHtmlPreview")
-    public void reportHtmlPreview(HttpServletResponse response) throws Exception {
+    public void reportHtmlPreview(HttpServletResponse response) {
         Map<String, Object> params = new HashMap<>();
         ExcelUtil.generateHtmlToResponse(params, response);
     }

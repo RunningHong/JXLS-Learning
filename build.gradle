@@ -1,4 +1,4 @@
-group 'JXLS-Learning'
+group 'Report-Learning'
 version '1.0-SNAPSHOT'
 
 // 应用的插件（java用于打jar包，war用于web项目打war包）
