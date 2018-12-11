@@ -3,7 +3,7 @@ version '1.0-SNAPSHOT'
 
 // 应用的插件（java用于打jar包，war用于web项目打war包）
 // 可在Gradle-Tasks-build中找到相应的插件启动程序
-apply plugin: 'java'
+// apply plugin: 'java'
 apply plugin: 'war'
 
 //声明java源码的版本
@@ -46,6 +46,7 @@ dependencies {
     compile ('org.apache.poi:poi-ooxml-schemas:4.0.1') { force = true }
     compile ('org.apache.poi:poi-scratchpad:4.0.1') { force = true }
 
+    // openOffice需要的jar
     compile group: 'com.artofsolving', name: 'jodconverter', version: '2.2.1'
 
 }
