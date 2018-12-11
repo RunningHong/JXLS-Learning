@@ -107,7 +107,7 @@ public class ExcelToHtmlUtil {
         transformer.setOutputProperty(OutputKeys.METHOD, "html");
         transformer.transform(new DOMSource(excelToHtmlConverter.getDocument()), new StreamResult(os));
 
-        log.info("根据Excel模板使用POI预览HTML成功！");
+        log.info("根据Excel模板使用POI预览HTML成功。");
     }
 
 }
