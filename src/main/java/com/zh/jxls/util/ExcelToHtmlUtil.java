@@ -45,6 +45,7 @@ public class ExcelToHtmlUtil {
     public static void excelStreamToHtmlStreamByOpenOffice(InputStream is, OutputStream os) {
         // 打开OpenOffice服务
         OpenOfficeUtil.startOpenOffice();
+
         OpenOfficeConnection connection = new SocketOpenOfficeConnection(8100);
         try {
             connection.connect();
@@ -86,6 +87,7 @@ public class ExcelToHtmlUtil {
 
         // 修改了ExcelToHtmlConverter的一点内容
         ExcelToHtmlConverterModify excelToHtmlConverter = new ExcelToHtmlConverterModify(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
+
         // ExcelToHtmlConverter excelToHtmlConverter = new ExcelToHtmlConverter(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
 
 

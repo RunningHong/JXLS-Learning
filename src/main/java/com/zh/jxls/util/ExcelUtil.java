@@ -28,10 +28,11 @@ public class ExcelUtil {
     static Logger log = LoggerFactory.getLogger(ExcelUtil.class);
 
     /**
-     * 将2003Excel流转换为文件
+     * 将2003Excel流保存到Excel文件
      * @Author RunningHong
      * @Date 2018/12/8 13:52
-     * @Param is:2003Excel流，outFile:输出文件
+     * @param is 2003Excel流
+     * @param outFile 输出文件
      * @return
      */
     public static void excelStreamToFile(InputStream is, File outFile) {
@@ -48,9 +49,10 @@ public class ExcelUtil {
     /**
      * 将图片的流is写入Excel的workbook
      * 图片存放于Excel新建的一个TestPicSheet钟
-     * @Author RunningHong
-     * @Date 2018/12/6 14:44
-     * @Param is:图片的流  workbook:带插入Excel的workbook
+     * @author RunningHong
+     * @date 2018/12/6 14:44
+     * @param is 图片的流
+     * @param workbook 带插入Excel的workbook
      * @return 
      */
     public static void writePictureToExcel(InputStream is, HSSFWorkbook workbook) throws Exception {
@@ -109,6 +111,7 @@ public class ExcelUtil {
 
             // 使用OpenOffice将Excel文件流out转化为HTML，数据存储在response中
             // ExcelToHtmlUtil.excelStreamToHtmlStreamByOpenOffice(new ByteArrayInputStream(out.toByteArray()), response.getOutputStream());
+
             // 使用poi将Excel文件流out转化为HTML，数据存储在response中
             ExcelToHtmlUtil.excelStreamToHtmlStreamByPoi(new ByteArrayInputStream(out.toByteArray()), response.getOutputStream());
         } catch (Exception e) {
@@ -122,7 +125,8 @@ public class ExcelUtil {
      * 生成Excel2003文件的所有图片到指定位置
      * @Author RunningHong
      * @Date 2018/12/6 10:06
-     * @Param is：Excel流信息  picSavePath：图片存放位置
+     * @param is Excel流信息
+     * @param picSavePath 图片存放位置
      * @return
      */
     public static void generateExcelPictureToFile(InputStream is, String picSavePath) throws Exception {
@@ -150,7 +154,7 @@ public class ExcelUtil {
     /**
      * 处理参数，供给jxls渲染模板
      * @Author RunningHong
-     * @Date 2018/12/8 14:31
+     * @date 2018/12/8 14:31
      * @Param
      * @return
      */

@@ -4,6 +4,7 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
+import org.jboss.logging.Param;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,16 +16,16 @@ import java.util.HashMap;
  * @author RunningHong
  * @create 2018-12-03 21:47
  */
-public class ExcelTo2003Util {
+public class ExcelXlsxToXlsUtil {
 
-   /* *//**
+   /**
      * 入口方法<br>
      * 将Excel文件转换为Excle2003版本的HSSFWorkbook
      * @Author RunningHong
      * @Date 2018/12/4 10:35
-     * @Param transExcelFile 需要转化的文件
+     * @param transExcelFile 需要转化的文件
      * @return Excel的HSSFWorkbook
-     *//*
+     */
     public HSSFWorkbook transformExcleTo2003(File transExcelFile) {
         HSSFWorkbook excelBook = new HSSFWorkbook();
         try {
@@ -49,14 +50,14 @@ public class ExcelTo2003Util {
     private int lastColumn = 0;
     private HashMap<Integer, HSSFCellStyle> styleMap = new HashMap();
 
-    *//**
+    /**
      * XSSFSheet是Excel2003的格式，HSSFSheet是Excel2007+的格式
      * 此处遍历sheet，进行sheet内容替换
      * @Author RunningHong
      * @Date 2018/12/4 9:44
      * @Param
      * @return
-     *//*
+     */
     public void transformXSSF(XSSFWorkbook workbookOld, HSSFWorkbook workbookNew) {
         HSSFSheet sheetNew;
         XSSFSheet sheetOld;
@@ -71,13 +72,13 @@ public class ExcelTo2003Util {
         }
     }
 
-    *//**
+    /**
      * 对sheet内容进行转换
      * @Author RunningHong
      * @Date 2018/12/4 9:46
      * @Param
      * @return
-     *//*
+     */
     private void transformSheet(XSSFWorkbook workbookOld, HSSFWorkbook workbookNew,
                                 XSSFSheet sheetOld, HSSFSheet sheetNew) {
 
@@ -119,13 +120,13 @@ public class ExcelTo2003Util {
         }
     }
 
-    *//**
+    /**
      * 对行元素row进行转换
      * @Author RunningHong
      * @Date 2018/12/4 9:47
      * @Param
      * @return
-     *//*
+     */
     private void transformRow(XSSFWorkbook workbookOld, HSSFWorkbook workbookNew,
                            XSSFRow rowOld, HSSFRow rowNew) {
         HSSFCell cellNew;
@@ -141,13 +142,13 @@ public class ExcelTo2003Util {
         this.lastColumn = Math.max(this.lastColumn, rowOld.getLastCellNum());
     }
 
-    *//**
+    /**
      * 对行内元素进行cell转换
      * @Author RunningHong
      * @Date 2018/12/4 9:49
      * @Param
      * @return
-     *//*
+     */
     private void transformCell(XSSFWorkbook workbookOld, HSSFWorkbook workbookNew,
                            XSSFCell cellOld, HSSFCell cellNew) {
         cellNew.setCellComment(cellOld.getCellComment());
@@ -185,13 +186,13 @@ public class ExcelTo2003Util {
         }
     }
 
-    *//**
+    /**
      * 对单元格cell的样式进行转化
      * @Author RunningHong
      * @Date 2018/12/4 9:51
      * @Param
      * @return
-     *//*
+     */
     private void transformStyle(XSSFWorkbook workbookOld, HSSFWorkbook workbookNew,
                                 Integer hash, XSSFCellStyle styleOld, HSSFCellStyle styleNew) {
 
@@ -213,26 +214,26 @@ public class ExcelTo2003Util {
         this.styleMap.put(hash, styleNew);
     }
 
-    *//**
+    /**
      * 数据格式机型转化
      * @Author RunningHong
      * @Date 2018/12/4 9:53
      * @Param
      * @return
-     *//*
+     */
     private short transformDataFormat(XSSFWorkbook workbookOld, HSSFWorkbook workbookNew, short index) {
         DataFormat formatOld = workbookOld.createDataFormat();
         DataFormat formatNew = workbookNew.createDataFormat();
         return formatNew.getFormat(formatOld.getFormat(index));
     }
 
-    *//**
+    /**
      * 字体进行转化
      * @Author RunningHong
      * @Date 2018/12/4 9:53
      * @Param
      * @return
-     *//*
+     */
     private HSSFFont transformFont(HSSFWorkbook workbookNew, XSSFFont fontOld) {
         HSSFFont fontNew = workbookNew.createFont();
         fontNew.setBold(fontOld.getBold());
@@ -246,5 +247,4 @@ public class ExcelTo2003Util {
         fontNew.setUnderline(fontOld.getUnderline());
         return fontNew;
     }
-*/
 }
