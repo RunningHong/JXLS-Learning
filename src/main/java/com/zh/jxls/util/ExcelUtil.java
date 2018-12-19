@@ -28,12 +28,21 @@ public class ExcelUtil {
     static Logger log = LoggerFactory.getLogger(ExcelUtil.class);
 
     /**
-     * 将2003Excel流保存到Excel文件
-     * @Author RunningHong
-     * @Date 2018/12/8 13:52
+     * 将xls转换为PDF
+     * @author RunningHong at 2018/12/19 22:09
+     * @param 
+     * @return 
+     */
+    public static void xlsToPdf() {
+
+    }
+
+    /**
+     * 将03版Excel流保存到Excel文件
+     * @author RunningHong
+     * @date 2018/12/8 13:52
      * @param is 2003Excel流
      * @param outFile 输出文件
-     * @return
      */
     public static void excelStreamToFile(InputStream is, File outFile) {
         try {
@@ -48,12 +57,11 @@ public class ExcelUtil {
 
     /**
      * 将图片的流is写入Excel的workbook
-     * 图片存放于Excel新建的一个TestPicSheet钟
+     * 图片存放于Excel新建的一个sheet中
      * @author RunningHong
      * @date 2018/12/6 14:44
      * @param is 图片的流
      * @param workbook 带插入Excel的workbook
-     * @return 
      */
     public static void writePictureToExcel(InputStream is, HSSFWorkbook workbook) throws Exception {
         // 创建新的sheet，用于存放图片sheet
@@ -74,60 +82,17 @@ public class ExcelUtil {
         // 往workbook中插入图片
         patriarch.createPicture(anchor, workbook.addPicture(byteArrayOut.toByteArray(),
                                                             HSSFWorkbook.PICTURE_TYPE_JPEG));
-        log.info("图片流写入xls成功");
+        log.info("图片流写入xls成功。");
     }
 
 
-    /**
-     * 生成HTML文件,文件流存于response中
-     * @Author RunningHong
-     * @Date 2018/12/3 19:55
-     * @Param
-     * @return
-     */
-    public static void generateHtmlToResponse(Map<String, Object> params, HttpServletResponse response) {
-        try {
-            response.setContentType("text/html");
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-            // 参数处理,提供给jxls渲染模板
-            Context context = handleParams(params);
-
-            // Excel模板文件读取
-            String templateFilePath = PropertiesUtil.getPropertyFromPropertyFile("filePath.properties", "templateFilePath");
-            InputStream tempXlsIs = new FileInputStream(new File(templateFilePath));
-
-            // 使用jxsl渲染，渲染后的数据存放于out中
-            JxlsHelper.getInstance().processTemplate(tempXlsIs, out, context);
-
-            // 将Excel流存储到文件
-            String saveExcelStreamToFilePath = PropertiesUtil.getPropertyFromPropertyFile("filePath.properties", "saveExcelStreamToFilePath");
-            ExcelUtil.excelStreamToFile(new ByteArrayInputStream(out.toByteArray()), new File(saveExcelStreamToFilePath));
-
-            // 读取Excel流中的图片到指定位置
-            String excelPictureSavePath = PropertiesUtil.getPropertyFromPropertyFile("filePath.properties", "excelPictureSavePath");
-            ExcelUtil.generateExcelPictureToFile(new ByteArrayInputStream(out.toByteArray()), excelPictureSavePath);
-
-
-            // 使用OpenOffice将Excel文件流out转化为HTML，数据存储在response中
-            // ExcelToHtmlUtil.excelStreamToHtmlStreamByOpenOffice(new ByteArrayInputStream(out.toByteArray()), response.getOutputStream());
-
-            // 使用poi将Excel文件流out转化为HTML，数据存储在response中
-            ExcelToHtmlUtil.excelStreamToHtmlStreamByPoi(new ByteArrayInputStream(out.toByteArray()), response.getOutputStream());
-        } catch (Exception e) {
-            log.error("根据Excel模板文件生成预览HTML失败");
-            e.printStackTrace();
-        }
-    }
-
 
     /**
-     * 生成Excel2003文件的所有图片到指定位置
-     * @Author RunningHong
-     * @Date 2018/12/6 10:06
+     * 取出03版Excel文件的所有图片，并保存到指定位置
+     * @author RunningHong
+     * @date 2018/12/6 10:06
      * @param is Excel流信息
      * @param picSavePath 图片存放位置
-     * @return
      */
     public static void generateExcelPictureToFile(InputStream is, String picSavePath) throws Exception {
         HSSFWorkbook workbook = new HSSFWorkbook(is);
@@ -141,9 +106,8 @@ public class ExcelUtil {
         if (pics != null) {
             for (int i = 0; i < pics.size(); i++) {
                 HSSFPictureData  picDate = (HSSFPictureData) pics.get(i);
-                // String saveName = "pic" + (i+1) + new SimpleDateFormat( "_MM_dd HH_mm" ).format(new Date()) + ".jpg";
-                String saveName = "pic" + (i+1) + ".jpg";
 
+                String saveName = "pic" + (i+1) + ".jpg";
                 FileOutputStream fos = new FileOutputStream(new File(picSavePath + saveName));
                 fos.write(picDate.getData());
                 fos.close();
@@ -153,9 +117,9 @@ public class ExcelUtil {
 
     /**
      * 处理参数，供给jxls渲染模板
-     * @Author RunningHong
+     * @author RunningHong
      * @date 2018/12/8 14:31
-     * @Param
+     * @param params 待处理的参数
      * @return
      */
     public static Context handleParams(Map<String, Object> params) {
@@ -171,9 +135,9 @@ public class ExcelUtil {
 
     /**
      * 生成测试数据
-     * @Author RunningHong
-     * @Date 2018/12/3 19:54
-     * @Param
+     * @author RunningHong
+     * @date 2018/12/3 19:54
+     * @param
      * @return
      */
     public static List<Object> generateDate() {

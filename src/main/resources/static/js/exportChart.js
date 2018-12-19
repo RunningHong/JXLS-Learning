@@ -14,7 +14,7 @@ function exportChart(mychart) {
     $.ajax({
         type: 'POST',
         dataType: "json",
-        url: "/chart/saveChartImage",
+        url: "/reportController/saveChart",
         data: {"picInfo": myChart.getDataURL()},
         success: function () {
             console.log('导出Echarts统计图表成功。');
