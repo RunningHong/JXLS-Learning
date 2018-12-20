@@ -10,11 +10,11 @@ import java.io.*;
 import java.util.Map;
 
 /**
- * 生成HTML，PDF流，用于前台展示
+ * 用于前台预览展示
  * @author RunningHong
  * @create 2018-12-19 19:47
  */
-public class GenerateUtil {
+public class PreviewUtil {
 
     static Logger log = LoggerFactory.getLogger(ExcelToHtmlUtil.class);
 
@@ -61,13 +61,4 @@ public class GenerateUtil {
     }
 
 
-    /**
-     * 生成PDF,文件流存于response中，用于前台展示
-     * @author RunningHong at 2018/12/19 19:53
-     * @param 
-     * @return 
-     */
-    public static void generatePdfToResponse(Map<String, Object> params, HttpServletResponse response) {
-        // TODO: 将信息转换为pdf在前台展示，感觉有点不对，转成pdf怎么在前台展示，分页怎么处理？（暂且搁置）
-    }
 }

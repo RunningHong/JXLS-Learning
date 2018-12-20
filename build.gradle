@@ -46,7 +46,7 @@ dependencies {
     compile ('org.apache.poi:poi-ooxml-schemas:4.0.1') { force = true }
     compile ('org.apache.poi:poi-scratchpad:4.0.1') { force = true }
 
-    // openOffice需要的jar
+    // OpenOffice需要的jar
     compile group: 'com.artofsolving', name: 'jodconverter', version: '2.2.1'
 
 }

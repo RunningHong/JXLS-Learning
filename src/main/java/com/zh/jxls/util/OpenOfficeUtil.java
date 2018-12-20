@@ -1,9 +1,12 @@
 package com.zh.jxls.util;
 
+import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
+import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * 需要手动配置OpenOffice的位置
  * @author RunningHong
  * @create 2018-12-07 17:00
  */
@@ -20,10 +23,14 @@ public class OpenOfficeUtil {
 
     private static Process openOfficeProcess = null;
 
+    private static OpenOfficeConnection connection = null;
+
     /**
-     * 启动openOffice服务
+     * 得到OpenOfficeConnection，使用后记得使用connection.disconnect()关闭连接
+     * @author RunningHong at 2018/12/20 16:04
+     * @return OpenOfficeConnection
      */
-    public static Process startOpenOffice() {
+    public static OpenOfficeConnection getOpenOfficeConnection() {
         // 启动OpenOffice的服务的完整命令
         String fullCommand = OpenOffice_HOME + command;
 
@@ -31,11 +38,18 @@ public class OpenOfficeUtil {
             if (openOfficeProcess == null) {
                 openOfficeProcess = Runtime.getRuntime().exec(fullCommand);
             }
-            log.info("OpenOffice开启成功");
+
+            if (connection == null) { // connection为空创建连接
+                // 创建OpenOffic连接
+                connection = new SocketOpenOfficeConnection(8100);
+            }
+
+            connection.connect();
         } catch (Exception e) {
+            log.error("OpenOffice连接获取失败，请检查OpenOffice服务是否启动！！！");
             e.printStackTrace();
         }
 
-        return openOfficeProcess;
+        return connection;
     }
 }

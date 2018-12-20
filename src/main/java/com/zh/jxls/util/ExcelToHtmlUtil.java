@@ -43,34 +43,31 @@ public class ExcelToHtmlUtil {
      * @return
      */
     public static void excelStreamToHtmlStreamByOpenOffice(InputStream is, OutputStream os) {
-        // 打开OpenOffice服务
-        OpenOfficeUtil.startOpenOffice();
-
-        OpenOfficeConnection connection = new SocketOpenOfficeConnection(8100);
-        try {
-            connection.connect();
-        } catch (Exception e) {
-            System.err.println("OpenOffice文件转换出错，请检查OpenOffice服务是否启动。");
-        }
+        // 得到OpenOffice的连接
+        OpenOfficeConnection connection = OpenOfficeUtil.getOpenOfficeConnection();
 
         // 转换器
         DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
 
-        // html格式
-        DocumentFormat html = new DocumentFormat("HTML", DocumentFamily.TEXT, "text/html", "html");
-        html.setExportFilter(DocumentFamily.PRESENTATION, "impress_html_Export");
-        html.setExportFilter(DocumentFamily.SPREADSHEET, "HTML (StarCalc)");
-        html.setExportFilter(DocumentFamily.TEXT, "HTML (StarWriter)");
-
         // xls格式
-        DocumentFormat xls = new DocumentFormat("Microsoft Excel", DocumentFamily.SPREADSHEET, "application/vnd.ms-excel", "xls");
-        xls.setExportFilter(DocumentFamily.SPREADSHEET, "MS Excel 97");
+        DocumentFormat xlsFormat = new DocumentFormat("Microsoft Excel", DocumentFamily.SPREADSHEET, "application/vnd.ms-excel", "xls");
+        xlsFormat.setExportFilter(DocumentFamily.SPREADSHEET, "MS Excel 97");
+
+        // html格式
+        DocumentFormat htmlFormat = new DocumentFormat("HTML", DocumentFamily.TEXT, "text/html", "html");
+        htmlFormat.setExportFilter(DocumentFamily.PRESENTATION, "impress_html_Export");
+        htmlFormat.setExportFilter(DocumentFamily.SPREADSHEET, "HTML (StarCalc)");
+        htmlFormat.setExportFilter(DocumentFamily.TEXT, "HTML (StarWriter)");
+
+        final DocumentFormat pdf = new DocumentFormat("Portable Document Format", "application/pdf", "pdf");
+        pdf.setExportFilter(DocumentFamily.DRAWING, "draw_pdf_Export");
+        pdf.setExportFilter(DocumentFamily.PRESENTATION, "impress_pdf_Export");
+        pdf.setExportFilter(DocumentFamily.SPREADSHEET, "calc_pdf_Export");
+        pdf.setExportFilter(DocumentFamily.TEXT, "writer_pdf_Export");
 
         // 将xls流装换为html流
-        converter.convert(is, xls, os, html);
+        converter.convert(is, xlsFormat, os, htmlFormat);
         connection.disconnect();
-
-        log.info("根据Excel模板使用OpenOffice预览HTML成功！");
     }
 
 
@@ -108,8 +105,6 @@ public class ExcelToHtmlUtil {
         transformer.setOutputProperty(OutputKeys.INDENT, "no");
         transformer.setOutputProperty(OutputKeys.METHOD, "html");
         transformer.transform(new DOMSource(excelToHtmlConverter.getDocument()), new StreamResult(os));
-
-        log.info("根据Excel模板使用POI预览HTML成功。");
     }
 
 }

@@ -2,7 +2,7 @@ package com.zh.jxls.controller;
 
 import com.zh.jxls.util.ExportUtil;
 import com.zh.jxls.util.FileUtil;
-import com.zh.jxls.util.GenerateUtil;
+import com.zh.jxls.util.PreviewUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +30,7 @@ public class ReportController {
     @RequestMapping("/reportPreview")
     public void reportHtmlPreview(HttpServletResponse response) {
         Map<String, Object> params = new HashMap<>();
-        GenerateUtil.generateHtmlToResponse(params, response);
+        PreviewUtil.generateHtmlToResponse(params, response);
     }
 
     /**
@@ -51,15 +51,26 @@ public class ReportController {
     }
 
     /**
-     * 统计报表导出
+     * 统计报表导出 <br>
+     * 说明：<br>
+     * 1)导出pdf需要使用OpenOffice服务，需要手动打开<br>
+     * 2)导出pdf格式可能会出现列数过多导致折页现象，此时在excel模板文件中，把打印设置设为缩放打印（将所有列调整为一页）<br>
      * @author RunningHong at 2018/12/19 21:18
-     * @param
+     * @param exportType 导出类型，exportType为pdf导出pdf格式，其余导出excel格式
      */
     @RequestMapping("/reportExport")
-    public void reportExport(HttpServletResponse response) {
+    public void reportExport(HttpServletResponse response, String exportType) {
         Map<String, Object> params = new HashMap<>();
-        ExportUtil.exportMesToXls(params, response);
+
+        if ("pdf".equals(exportType)) {
+            // 导出为pdf格式
+            ExportUtil.exportMesToPdfByOpenOffice(response);
+        } else {
+            // 导出为excel格式
+            ExportUtil.exportMesToXls(params, response);
+        }
     }
+
 
 
 
