@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * 报表控制器
  * @author RunningHong
- * @create 2018-12-03 20:12
+ * @since 2018-12-03 20:12
  */
 @RestController
 @RequestMapping( value = "/reportController")
@@ -30,7 +30,7 @@ public class ReportController {
     @RequestMapping("/reportPreview")
     public void reportHtmlPreview(HttpServletResponse response) {
         Map<String, Object> params = new HashMap<>();
-        PreviewUtil.generateHtmlToResponse(params, response);
+        PreviewUtil.previewHtml(params, response);
     }
 
     /**
@@ -62,9 +62,12 @@ public class ReportController {
     public void reportExport(HttpServletResponse response, String exportType) {
         Map<String, Object> params = new HashMap<>();
 
+        // 设置报表导出名称
+        params.put("exportName", "报表导出文件");
+
         if ("pdf".equals(exportType)) {
             // 导出为pdf格式
-            ExportUtil.exportMesToPdfByOpenOffice(response);
+            ExportUtil.exportMesToPdf(params, response);
         } else {
             // 导出为excel格式
             ExportUtil.exportMesToXls(params, response);

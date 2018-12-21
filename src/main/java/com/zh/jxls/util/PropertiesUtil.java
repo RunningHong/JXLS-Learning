@@ -12,7 +12,7 @@ import java.util.Properties;
 /**
  * Properties工具类
  * @author RunningHong
- * @create 2018-12-08 16:21
+ * @since 2018-12-08 16:21
  */
 public class PropertiesUtil {
     static Logger log = LoggerFactory.getLogger(PropertiesUtil.class);
@@ -20,9 +20,9 @@ public class PropertiesUtil {
     /**
      * 从特定的配置文件读取配置参数的值
      * 方法使用UTF-8格式读取，可以读取中文参数值
-     * @Author RunningHong
-     * @Date 2018/12/10 10:35
-     * @Param propertyFilePath：配置文件相对路径    proName:参数名称
+     * @author RunningHong
+     * @date 2018/12/10 10:35
+     * @param propertyFilePath：配置文件相对路径    proName:参数名称
      * @return 参数值
      */
     public static String getPropertyFromPropertyFile(String propertyFilePath, String proName) {

@@ -21,7 +21,7 @@ import java.util.*;
 /**
  * 对Excel进行操作
  * @author RunningHong
- * @create 2018-12-03 20:59
+ * @since 2018-12-03 20:59
  */
 public class ExcelUtil {
 
@@ -115,45 +115,5 @@ public class ExcelUtil {
         }
     }
 
-    /**
-     * 处理参数，供给jxls渲染模板
-     * @author RunningHong
-     * @date 2018/12/8 14:31
-     * @param params 待处理的参数
-     * @return
-     */
-    public static Context handleParams(Map<String, Object> params) {
-        // 生成测试数据
-        List<Object> empList = generateDate();
-
-        // 往context中添加数据
-        Context context = new Context(params);
-        context.putVar("emps", empList);
-
-        return context;
-    }
-
-    /**
-     * 生成测试数据
-     * @author RunningHong
-     * @date 2018/12/3 19:54
-     * @param
-     * @return
-     */
-    public static List<Object> generateDate() {
-        List<Object> list = new LinkedList<>();
-
-        String time = new SimpleDateFormat( "(YY_MM_dd HH_mm_ss)" ).format(new Date());
-        for (int i = 0; i < 10; i++) {
-            Employee emp = new Employee();
-            emp.setName("测试人员" + i + "\r\n" + "iiiiiiiiiiiiiiiiii");
-            emp.setAge(i+20);
-            emp.setCode(100 + i + "");
-            emp.setLinkTel(time);
-
-            list.add(emp);
-        }
-        return list;
-    }
 
 }

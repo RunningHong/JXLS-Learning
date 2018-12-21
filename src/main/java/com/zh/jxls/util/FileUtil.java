@@ -11,7 +11,7 @@ import java.io.OutputStream;
 /**
  * 文件工具类
  * @author RunningHong
- * @create 2018-12-04 10:07
+ * @since 2018-12-04 10:07
  */
 public class FileUtil {
 

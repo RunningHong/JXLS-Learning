@@ -28,8 +28,8 @@ import java.util.List;
 
 /**
  * Excel转换为html工具类
- * @Author RunningHong
- * @Date 2018/12/8 15:32
+ * @author RunningHong
+ * @since 2018/12/8 15:32
  */
 public class ExcelToHtmlUtil {
 
@@ -37,47 +37,19 @@ public class ExcelToHtmlUtil {
 
     /**
      * 使用openOffice将excel流转换为HTML流并放于os中
-     * @Author RunningHong
-     * @Date 2018/12/7 17:56
-     * @Param
-     * @return
+     * @author RunningHong
+     * @date 2018/12/7 17:56
      */
     public static void excelStreamToHtmlStreamByOpenOffice(InputStream is, OutputStream os) {
-        // 得到OpenOffice的连接
-        OpenOfficeConnection connection = OpenOfficeUtil.getOpenOfficeConnection();
-
-        // 转换器
-        DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
-
-        // xls格式
-        DocumentFormat xlsFormat = new DocumentFormat("Microsoft Excel", DocumentFamily.SPREADSHEET, "application/vnd.ms-excel", "xls");
-        xlsFormat.setExportFilter(DocumentFamily.SPREADSHEET, "MS Excel 97");
-
-        // html格式
-        DocumentFormat htmlFormat = new DocumentFormat("HTML", DocumentFamily.TEXT, "text/html", "html");
-        htmlFormat.setExportFilter(DocumentFamily.PRESENTATION, "impress_html_Export");
-        htmlFormat.setExportFilter(DocumentFamily.SPREADSHEET, "HTML (StarCalc)");
-        htmlFormat.setExportFilter(DocumentFamily.TEXT, "HTML (StarWriter)");
-
-        final DocumentFormat pdf = new DocumentFormat("Portable Document Format", "application/pdf", "pdf");
-        pdf.setExportFilter(DocumentFamily.DRAWING, "draw_pdf_Export");
-        pdf.setExportFilter(DocumentFamily.PRESENTATION, "impress_pdf_Export");
-        pdf.setExportFilter(DocumentFamily.SPREADSHEET, "calc_pdf_Export");
-        pdf.setExportFilter(DocumentFamily.TEXT, "writer_pdf_Export");
-
-        // 将xls流装换为html流
-        converter.convert(is, xlsFormat, os, htmlFormat);
-        connection.disconnect();
+        OpenOfficeUtil.excelStreamToHtmlStream(is, os);
     }
 
 
     /**
      * 使用poi将Excel文件流out转化为HTML，数据存储在os中
      * 使用poi
-     * @Author RunningHong
-     * @Date 2018/12/3 16:59
-     * @Param
-     * @return
+     * @author RunningHong
+     * @date 2018/12/3 16:59
      */
     public static void excelStreamToHtmlStreamByPoi(InputStream is, OutputStream os) throws Exception {
         HSSFWorkbook workbook = new HSSFWorkbook(is);
@@ -86,7 +58,6 @@ public class ExcelToHtmlUtil {
         ExcelToHtmlConverterModify excelToHtmlConverter = new ExcelToHtmlConverterModify(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
 
         // ExcelToHtmlConverter excelToHtmlConverter = new ExcelToHtmlConverter(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
-
 
         // 去掉列号(Excel的A B C D列号)
         excelToHtmlConverter.setOutputColumnHeaders(false);

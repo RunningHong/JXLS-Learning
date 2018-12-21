@@ -14,15 +14,15 @@ import java.util.HashMap;
 /**
  * 将Excel版本(2007+)转换为2003版
  * @author RunningHong
- * @create 2018-12-03 21:47
+ * @since 2018-12-03 21:47
  */
 public class ExcelXlsxToXlsUtil {
 
    /**
      * 入口方法<br>
      * 将Excel文件转换为Excle2003版本的HSSFWorkbook
-     * @Author RunningHong
-     * @Date 2018/12/4 10:35
+     * @author RunningHong
+     * @date 2018/12/4 10:35
      * @param transExcelFile 需要转化的文件
      * @return Excel的HSSFWorkbook
      */
@@ -53,10 +53,8 @@ public class ExcelXlsxToXlsUtil {
     /**
      * XSSFSheet是Excel2003的格式，HSSFSheet是Excel2007+的格式
      * 此处遍历sheet，进行sheet内容替换
-     * @Author RunningHong
-     * @Date 2018/12/4 9:44
-     * @Param
-     * @return
+     * @author RunningHong
+     * @date 2018/12/4 9:44
      */
     public void transformXSSF(XSSFWorkbook workbookOld, HSSFWorkbook workbookNew) {
         HSSFSheet sheetNew;
@@ -74,10 +72,8 @@ public class ExcelXlsxToXlsUtil {
 
     /**
      * 对sheet内容进行转换
-     * @Author RunningHong
-     * @Date 2018/12/4 9:46
-     * @Param
-     * @return
+     * @author RunningHong
+     * @date 2018/12/4 9:46
      */
     private void transformSheet(XSSFWorkbook workbookOld, HSSFWorkbook workbookNew,
                                 XSSFSheet sheetOld, HSSFSheet sheetNew) {
@@ -122,10 +118,8 @@ public class ExcelXlsxToXlsUtil {
 
     /**
      * 对行元素row进行转换
-     * @Author RunningHong
-     * @Date 2018/12/4 9:47
-     * @Param
-     * @return
+     * @author RunningHong
+     * @date 2018/12/4 9:47
      */
     private void transformRow(XSSFWorkbook workbookOld, HSSFWorkbook workbookNew,
                            XSSFRow rowOld, HSSFRow rowNew) {
@@ -144,10 +138,7 @@ public class ExcelXlsxToXlsUtil {
 
     /**
      * 对行内元素进行cell转换
-     * @Author RunningHong
-     * @Date 2018/12/4 9:49
-     * @Param
-     * @return
+     * @author RunningHong at 2018/12/21 11:47
      */
     private void transformCell(XSSFWorkbook workbookOld, HSSFWorkbook workbookNew,
                            XSSFCell cellOld, HSSFCell cellNew) {
@@ -186,12 +177,10 @@ public class ExcelXlsxToXlsUtil {
         }
     }
 
+
     /**
-     * 对单元格cell的样式进行转化
-     * @Author RunningHong
-     * @Date 2018/12/4 9:51
-     * @Param
-     * @return
+     * 对行内元素进行cell转换
+     * @author RunningHong at 2018/12/21 11:47
      */
     private void transformStyle(XSSFWorkbook workbookOld, HSSFWorkbook workbookNew,
                                 Integer hash, XSSFCellStyle styleOld, HSSFCellStyle styleNew) {
@@ -216,10 +205,7 @@ public class ExcelXlsxToXlsUtil {
 
     /**
      * 数据格式机型转化
-     * @Author RunningHong
-     * @Date 2018/12/4 9:53
-     * @Param
-     * @return
+     * @author RunningHong at 2018/12/21 11:48
      */
     private short transformDataFormat(XSSFWorkbook workbookOld, HSSFWorkbook workbookNew, short index) {
         DataFormat formatOld = workbookOld.createDataFormat();
@@ -229,10 +215,7 @@ public class ExcelXlsxToXlsUtil {
 
     /**
      * 字体进行转化
-     * @Author RunningHong
-     * @Date 2018/12/4 9:53
-     * @Param
-     * @return
+     * @author RunningHong at 2018/12/21 11:48
      */
     private HSSFFont transformFont(HSSFWorkbook workbookNew, XSSFFont fontOld) {
         HSSFFont fontNew = workbookNew.createFont();
