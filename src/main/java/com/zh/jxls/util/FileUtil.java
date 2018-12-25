@@ -44,7 +44,7 @@ public class FileUtil {
      * @param filePath 保存路径
      * @return
      */
-    public static void saveByteArrayToFile(byte[] byteArr,File filePath) {
+    public static void saveByteArrayToFile(byte[] byteArr, File filePath) {
         OutputStream out = null;
         try {
             out = new FileOutputStream(filePath);

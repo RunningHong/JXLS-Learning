@@ -1,14 +1,16 @@
 package com.zh.jxls.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.zh.jxls.util.ExportUtil;
-import com.zh.jxls.util.FileUtil;
 import com.zh.jxls.util.PreviewUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,9 +25,7 @@ public class ReportController {
 
     /**
      * 统计报表HTML预览
-     * @Author RunningHong
-     * @Date 2018/12/3 20:13
-     * @param response
+     * @author RunningHong at 2018/12/3 20:13
      */
     @RequestMapping("/reportPreview")
     public void reportHtmlPreview(HttpServletResponse response) {
@@ -34,20 +34,20 @@ public class ReportController {
     }
 
     /**
-     * 获取并保存EChart图片
-     * @author RunningHong at 2018/12/11 12:00
-     * @param picInfo 图片信息base64加密过
+     * 导出所有charts到Excel
+     * 前台需要传需要导出的图片信息
+     * @author RunningHong at 2018/12/25 20:15
      */
-    @RequestMapping(value="/saveChart",method= RequestMethod.POST)
-    public void saveChartImage(String picInfo) {
-        // 图片解码后为byte[]
-        byte[] picByteArr = FileUtil.decodeBase64(picInfo);
+    @RequestMapping(value="/exportAllCharts",method= RequestMethod.POST)
+    public void exportAllCharts(HttpServletRequest request, HttpServletResponse response) {
+        JSONObject jsonObject = JSON.parseObject(request.getParameter("chartsJson"));
+        JSONArray chartsArray = jsonObject.getJSONArray("chartsJsonArray");
 
-        // 图片保存路径
-        String saveImagePath = "D:\\CodeSpace\\ideaWorkspace\\Report-Learning\\out\\generatePic\\chart.jpg";
+        Map<String, Object> params = new HashMap<>();
+        // 设置导出名称
+        params.put("exportName", "统计图表");
 
-        // 解码base64并把图片放到指定位置
-        FileUtil.saveByteArrayToFile(picByteArr, new File(saveImagePath));
+        ExportUtil.exportChartToXls(params, chartsArray, response);
     }
 
     /**
@@ -63,7 +63,7 @@ public class ReportController {
         Map<String, Object> params = new HashMap<>();
 
         // 设置报表导出名称
-        params.put("exportName", "报表导出文件");
+        params.put("exportName", "统计报表");
 
         if ("pdf".equals(exportType)) {
             // 导出为pdf格式

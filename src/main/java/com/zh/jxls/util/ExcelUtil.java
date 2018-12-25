@@ -1,5 +1,6 @@
 package com.zh.jxls.util;
 
+import com.alibaba.fastjson.JSONArray;
 import com.zh.jxls.entity.Employee;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
@@ -27,15 +28,6 @@ public class ExcelUtil {
 
     static Logger log = LoggerFactory.getLogger(ExcelUtil.class);
 
-    /**
-     * 将xls转换为PDF
-     * @author RunningHong at 2018/12/19 22:09
-     * @param 
-     * @return 
-     */
-    public static void xlsToPdf() {
-
-    }
 
     /**
      * 将03版Excel流保存到Excel文件
@@ -60,29 +52,35 @@ public class ExcelUtil {
      * 图片存放于Excel新建的一个sheet中
      * @author RunningHong
      * @date 2018/12/6 14:44
-     * @param is 图片的流
-     * @param workbook 带插入Excel的workbook
+     * @param chartsArray 图片的JSONArray
+     * @param workbook 待插入Excel的workbook
      */
-    public static void writePictureToExcel(InputStream is, HSSFWorkbook workbook) throws Exception {
-        // 创建新的sheet，用于存放图片sheet
-        HSSFSheet createSheet = workbook.createSheet("TestPicSheet");
+    public static void writePictureToExcel(JSONArray chartsArray, HSSFWorkbook workbook){
+        try {
+            // 循环插入图片
+            for (int i = 0; i < chartsArray.size(); i++) {
+                String sheetName = "统计图表" + (i+1);
+                HSSFSheet createSheet = workbook.createSheet(sheetName);
 
-        //画图的顶级管理器，一个sheet只能获取一个（一定要注意这点）
-        HSSFPatriarch patriarch = createSheet.createDrawingPatriarch();
-        HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 255, 255,(short) 1, 1, (short) 5, 8);
+                //画图的顶级管理器，一个sheet只能获取一个（一定要注意这点）
+                HSSFPatriarch patriarch = createSheet.createDrawingPatriarch();
 
-        // 设置图片DONT_MOVE_AND_RESIZE
-        anchor.setAnchorType(ClientAnchor.AnchorType.byId(3));
+                // 设置图片坐标
+                HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 255, 255,(short) 1, 1, (short) 5, 8);
 
-        // 读取图片io
-        ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
-        BufferedImage bufferImg = ImageIO.read(is);
-        ImageIO.write(bufferImg, "jpg", byteArrayOut);
+                // 设置图片DONT_MOVE_AND_RESIZE
+                anchor.setAnchorType(ClientAnchor.AnchorType.byId(3));
 
-        // 往workbook中插入图片
-        patriarch.createPicture(anchor, workbook.addPicture(byteArrayOut.toByteArray(),
-                                                            HSSFWorkbook.PICTURE_TYPE_JPEG));
-        log.info("图片流写入xls成功。");
+                // 图片解码为byte[]
+                byte[] picByteArray = FileUtil.decodeBase64((String)chartsArray.get(i));
+
+                // 往workbook中插入图片
+                patriarch.createPicture(anchor, workbook.addPicture(picByteArray, HSSFWorkbook.PICTURE_TYPE_PNG));
+            }
+        } catch (Exception e) {
+            log.error("图片写入excel失败！");
+            e.printStackTrace();
+        }
     }
 
 

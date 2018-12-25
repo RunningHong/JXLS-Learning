@@ -13,7 +13,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * 需要手动配置OpenOffice的位置
+ * 需要在配置文件中配置OpenOffice的相关参数
+ * OpenOfficeUtil
  * @author RunningHong
  * @since 2018-12-07 17:00
  */
@@ -46,7 +47,6 @@ public class OpenOfficeUtil {
             }
 
             if (connection == null) { // connection为空创建连接
-                // 创建OpenOffic连接
                 connection = new SocketOpenOfficeConnection(8100);
             }
 
@@ -55,7 +55,6 @@ public class OpenOfficeUtil {
             log.error("OpenOffice连接获取失败，请检查OpenOffice服务是否启动！！！");
             e.printStackTrace();
         }
-
         return connection;
     }
 

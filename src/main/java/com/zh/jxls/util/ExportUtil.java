@@ -1,11 +1,14 @@
 package com.zh.jxls.util;
 
+import com.alibaba.fastjson.JSONArray;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.*;
 import java.net.URLEncoder;
 import java.util.Map;
 
@@ -26,7 +29,12 @@ public class ExportUtil {
      * @return 报表名称
      */
     public static String handleExportName(Map<String, Object> params) {
-        String exportName = params.get("exportName").toString();
+        String exportName = "";
+        if(!params.containsKey("exportName")) { // 不存在key
+            exportName = "默认名称";
+        } else {
+            exportName = params.get("exportName").toString();
+        }
         try {
             // 导出文件名称
             if ("".equals(exportName) || (exportName == null)) {
@@ -51,12 +59,17 @@ public class ExportUtil {
             String exportName = ExportUtil.handleExportName(params);
 
             // 设置导出文件格式
-            response.setHeader("content-disposition","attachment;filename="+exportName+".xls");
+            response.setHeader("content-disposition","attachment;filename=" + exportName + ".xls");
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/vnd.ms-excel");
 
-            // 生成信息
-            PreviewUtil.previewHtml(params, response);
+            // 使用jxls渲染数据
+            ByteArrayOutputStream out = JxlsUtil.excelLoadingToStreamByJxls(params);
+
+            // 使用poi将Excel文件流out转化为HTML，数据存储在response中
+            ExcelToHtmlUtil.excelStreamToHtmlStreamByPoi(new ByteArrayInputStream(out.toByteArray()),
+                                                         response.getOutputStream());
+
         } catch (Exception e) {
             log.error("以XLS格式导出统计信息失败！");
             e.printStackTrace();
@@ -66,11 +79,34 @@ public class ExportUtil {
     /**
      * 以xls格式导出统计Chart
      * @author RunningHong at 2018/12/14 20:41
-     * @param
+     * @param params 参数信息
+     * @param chartsArray 图片的jsonArray信息
+     * @param response
      * @return
      */
-    public static void exportChartToXls() {
-        // TODO: 以xls格式导出统计Chart
+    public static void exportChartToXls(Map<String, Object> params, JSONArray chartsArray, HttpServletResponse response) {
+        // 导出文件名称
+        String exportName = ExportUtil.handleExportName(params);
+
+        // 设置导出文件格式
+        response.setHeader("content-disposition","attachment;filename="+exportName+".xls");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/vnd.ms-excel");
+
+        HSSFWorkbook workbook = new HSSFWorkbook();
+
+        // 处理图片写入excel
+        ExcelUtil.writePictureToExcel(chartsArray, workbook);
+
+        try { // 将excel信息写入response
+            OutputStream responseOs = response.getOutputStream();
+            workbook.write(responseOs);
+            responseOs.close();
+        } catch (Exception e) {
+            log.error("导出图表到Excel失败！");
+            e.printStackTrace();
+        }
+
     }
 
     /**
