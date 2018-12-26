@@ -61,9 +61,11 @@ public class ExportUtil {
         return exportName;
     }
     
-    
+    /**
+     * 统计报表导出
+     * @author RunningHong at 2018/12/26 16:42
+     */
     public static void reportExport(HttpServletRequest request, HttpServletResponse response) {
-        // TODO: 2018/12/26 整合导出
         // 获取前台参数
         JSONObject jsonParams = JSON.parseObject(request.getParameter("params"));
         Map<String, Object> paramsMap = ExportUtil.handleParams(jsonParams);
@@ -71,14 +73,57 @@ public class ExportUtil {
         // 设置报表导出名称
         paramsMap.put("exportName", "导出测试");
 
+        // 导出图表信息
+        JSONArray chartsMes = (JSONArray) paramsMap.get("chartsArray");
 
+        // 导出类型【信息导出、图表导出、合并导出】
+        String exportType = (String)paramsMap.get("exportType");
 
+        // 导出文件类型【xls, pdf】
+        String exportFileType = (String)paramsMap.get("exportFileType");
 
-        // ExportUtil.exportMesToXls(paramsMap, response);
+        if ("信息导出".equals(exportType) && "xls".equals(exportFileType)) { // 仅导出信息到xls
+            ExportUtil.exportMesToXls(paramsMap, response);
 
+        } else if ("图表导出".equals(exportType) && "xls".equals(exportFileType)) { // 仅导出charts到xls
+            ExportUtil.exportChartToXls(paramsMap, chartsMes, response);
 
+        } else if ("合并导出".equals(exportType) && "xls".equals(exportFileType)) { // 合并导出，同时导出信息和图表信息到xls
+            ExportUtil.exportMesAndChartToXls(paramsMap, chartsMes, response);
 
+        } else if ("信息导出".equals(exportType) && "pdf".equals(exportFileType)) { // 仅导出信息到pdf
+            ExportUtil.exportMesToPdf(paramsMap, response);
 
+        } else {
+            log.error("系统暂不支持此类型导出！");
+        }
+    }
+
+    /**
+     * 设置文件导出格式
+     * @author RunningHong at 2018/12/26 15:15
+     * @param params 导出所需参数
+     * @param exportFileType 导出文件类型【xls,pdf,...】
+     * @return
+     */
+    public static HttpServletResponse setExportType(Map<String, Object> params, String exportFileType, HttpServletResponse response) {
+        // 获取导出文件名称
+        String exportName = ExportUtil.handleExportName(params);
+
+        if ("xls".equals(exportFileType)) {
+            // 设置导出文件格式
+            response.setHeader("content-disposition","attachment;filename=" + exportName + ".xls");
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/vnd.ms-excel");
+        } else if ("pdf".equals(exportFileType)) {
+            //设置页面编码格式
+            response.setContentType("text/plain;charaset=utf-8");
+            response.setContentType("application/vnd.ms-pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=" + exportName + ".pdf");
+        } else {
+            log.error("报表暂不支持此类型导出！");
+        }
+        return response;
     }
     
     
@@ -89,23 +134,17 @@ public class ExportUtil {
      */
     public static void exportMesToXls(Map<String, Object> params, HttpServletResponse response) {
         try {
-            // 导出文件名称
-            String exportName = ExportUtil.handleExportName(params);
-
-            // 设置导出文件格式
-            response.setHeader("content-disposition","attachment;filename=" + exportName + ".xls");
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/vnd.ms-excel");
+            // 设置文件导出格式
+            response = setExportType(params, "xls", response);
 
             // 使用jxls渲染数据
-            ByteArrayOutputStream byteArrayOutputStream = JxlsUtil.excelLoadingToStreamByJxls(params);
+            ByteArrayOutputStream baos = JxlsUtil.excelLoadingToStreamByJxls(params);
 
             // 将信息存入response
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(baos.toByteArray());
             HSSFWorkbook workbook = new HSSFWorkbook(byteArrayInputStream);
             OutputStream os = response.getOutputStream();
             workbook.write(os);
-            os.close();
         } catch (Exception e) {
             log.error("以XLS格式导出统计信息失败！");
             e.printStackTrace();
@@ -120,22 +159,16 @@ public class ExportUtil {
      */
     public static void exportChartToXls(Map<String, Object> params, JSONArray chartsArray, HttpServletResponse response) {
         try {
-            // 导出文件名称
-            String exportName = ExportUtil.handleExportName(params);
-
-            // 设置导出文件格式
-            response.setHeader("content-disposition","attachment;filename=" + exportName + ".xls");
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/vnd.ms-excel");
+            // 设置文件导出格式
+            response = setExportType(params, "xls", response);
 
             HSSFWorkbook workbook = new HSSFWorkbook();
-
             // 处理图片写入excel
             ExcelUtil.writePictureToExcel(chartsArray, workbook);
 
+            // 图片信息存入response
             OutputStream os = response.getOutputStream();
             workbook.write(os);
-            os.close();
         } catch (Exception e) {
             log.error("导出图表到Excel失败！");
             e.printStackTrace();
@@ -150,28 +183,22 @@ public class ExportUtil {
      */
     public static void exportMesAndChartToXls(Map<String, Object> params, JSONArray chartsArray, HttpServletResponse response) {
         try {
-            // 导出文件名称
-            String exportName = ExportUtil.handleExportName(params);
-
-            // 设置导出文件格式
-            response.setHeader("content-disposition","attachment;filename=" + exportName + ".xls");
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/vnd.ms-excel");
+            // 设置文件导出格式
+            response = setExportType(params, "xls", response);
 
             // 使用jxls渲染数据
-            ByteArrayOutputStream byteArrayOutputStream = JxlsUtil.excelLoadingToStreamByJxls(params);
+            ByteArrayOutputStream byos = JxlsUtil.excelLoadingToStreamByJxls(params);
 
             // 将信息存入response
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byos.toByteArray());
             HSSFWorkbook workbook = new HSSFWorkbook(byteArrayInputStream);
 
             // 图片写入excel
             ExcelUtil.writePictureToExcel(chartsArray, workbook);
 
-            // 信息写入response
+            // 图片信息写入response
             OutputStream os = response.getOutputStream();
             workbook.write(os);
-            os.close();
         } catch (Exception e) {
             log.error("合并导出失败！");
             e.printStackTrace();
@@ -185,25 +212,19 @@ public class ExportUtil {
      */
     public static void exportMesToPdf(Map<String, Object> params, HttpServletResponse response) {
         try {
-            // 导出文件名称
-            String exportName = ExportUtil.handleExportName(params);
-
-            //设置页面编码格式
-            response.setContentType("text/plain;charaset=utf-8");
-            response.setContentType("application/vnd.ms-pdf");
-            response.setHeader("Content-Disposition", "attachment; filename=" + exportName + ".pdf");
+            // 设置文件导出格式
+            response = setExportType(params, "pdf", response);
 
             // 使用jxls渲染数据
-            ByteArrayOutputStream out = JxlsUtil.excelLoadingToStreamByJxls(params);
+            ByteArrayOutputStream byos = JxlsUtil.excelLoadingToStreamByJxls(params);
 
             // 使用OpenOffice把excel转换为PDF
-            OpenOfficeUtil.xlsStreamToPdfStream(new ByteArrayInputStream(out.toByteArray()),
+            OpenOfficeUtil.xlsStreamToPdfStream(new ByteArrayInputStream(byos.toByteArray()),
                                                 response.getOutputStream());
         } catch (Exception e) {
             log.error("以PDF格式导出统计信息失败！");
             e.printStackTrace();
         }
-
     }
 
 

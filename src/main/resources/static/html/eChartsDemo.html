@@ -11,10 +11,10 @@
     <script src="/js/exportChart.js"></script>
 </head>
 <body>
-    <!--<button onclick="exportCharts(myChart, testChart)">导出所有charts</button>-->
-    <!--<button onclick="mergeExport(myChart, testChart)">合并导出信息</button>-->
-
-    <button onclick="reportExport()">测试</button>
+    <button onclick="reportExport(1)">信息导出xls</button>
+    <button onclick="reportExport(2)">图表导出xls</button>
+    <button onclick="reportExport(3)">合并导出xls</button>
+    <button onclick="reportExport(4)">信息导出导出pdf</button>
 
     <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
     <div id="main" style="width: 600px;height:400px;"></div>
@@ -60,8 +60,9 @@
         testChart.setOption(option);
 
 
-        // 【重要】注册需要导出的统计图表
-        addExportCharts(myChart, testChart);
+        // 【重要】注册需要导出的统计图表(延迟用于使数据渲染完成)
+        setTimeout('addExportCharts(myChart, testChart)', 1000);
+
 
     </script>
 </body>

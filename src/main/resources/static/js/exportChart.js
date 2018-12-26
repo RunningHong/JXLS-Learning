@@ -3,18 +3,11 @@
  * RunningHong at 2018-12-11 13:15
  */
 
-
-
 // 参数集，用于传参
 var params = {"testParam":"ddd"};
 
-// 导出数组的信息数组
+// 导出信息数组,存放需要导出的图表
 var exportChartArray = [];
-
-
-
-
-
 
 
 /**
@@ -46,14 +39,30 @@ function addExportCharts() {
  * @param charts 这里传入需要导出的charts，参数不限量(举例：charts1)
  * 参数需是类似【var myChart = echarts.init(document.getElementById('main'));】的echarts初始化了的值
  */
-function reportExport() {
+function reportExport(type) {
     addParams({"modelFileKey": "测试报表ID"});
     addParams({"chartsArray": exportChartArray}); // 导出图片信息
-    addParams({"exportType": "信息导出"}); // 导出类型【信息导出、图表导出、合并导出】
-    addParams({"exportFileType": "xls"}); // 导出文件类型【xls, pdf】
+    // addParams({"exportType": "信息导出"}); // 导出类型【信息导出、图表导出、合并导出】
+    // addParams({"exportFileType": "pdf"}); // 导出文件类型【xls, pdf】
+
+    if (type == 1) {
+        addParams({"exportType": "信息导出"});
+        addParams({"exportFileType": "xls"});
+    } else if (type == 2) {
+        addParams({"exportType": "图表导出"});
+        addParams({"exportFileType": "xls"});
+    } else if (type == 3) {
+        addParams({"exportType": "合并导出"});
+        addParams({"exportFileType": "xls"});
+    } else if (type == 4) {
+        addParams({"exportType": "信息导出"});
+        addParams({"exportFileType": "pdf"});
+    }
 
     exportRequest(params);
 }
+
+
 
 /**
  * 导出请求，从此方法请求后台进行导出
@@ -66,7 +75,7 @@ function exportRequest(exportParams) {
     // 使用表单提交，解决ajax无法导出文件
     var form = $("<form>");
     form.attr('style', 'display:none');
-    form.attr('target', '_blank'); // 打开新窗口进行导出
+    form.attr('target', '_blank'); // 打开新窗口进行文件导出
     form.attr('method', 'post');
     form.attr('action', url);
     var input1 = $('<input>');
@@ -78,52 +87,8 @@ function exportRequest(exportParams) {
     form.submit();
     form.remove();
 
-    window.opener=null; // 关闭导出窗口
+    window.opener=null; // 关闭文件导出窗口
     window.open('','_self');
     window.close();
 }
-
-
-
-
-
-
-
-
-
-
-// /**
-//  * 导出页面上的图表
-//  * @param charts 这里传入需要导出的charts，参数不限量(举例：charts1)
-//  * 参数需是类似【var myChart = echarts.init(document.getElementById('main'));的echarts】初始化了的值
-//  */
-// function exportCharts() {
-//     // 根据传入的参数导出信息
-//     var chartsArray = [];
-//     for (var i = 0; i < arguments.length; i++) {
-//         chartsArray.push( arguments[i].getDataURL());
-//     }
-//
-//     var url = "/reportController/exportCharts";
-//
-//     exportComponent(url, chartsArray);
-// }
-//
-// /**
-//  * 合并导出
-//  */
-// function mergeExport() {
-//     // 根据传入的参数导出信息
-//     var chartsArray = [];
-//     for (var i = 0; i < arguments.length; i++) {
-//         chartsArray.push( arguments[i].getDataURL());
-//     }
-//
-//     var url = "/reportController/mergeExport";
-//
-//     exportComponent(url, chartsArray);
-//
-// }
-
-
 
