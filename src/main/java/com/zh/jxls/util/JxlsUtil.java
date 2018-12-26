@@ -41,7 +41,7 @@ public class JxlsUtil {
             // 使用jxsl渲染，渲染后的数据存放于out中
             JxlsHelper.getInstance().processTemplate(tempXlsIs, byteArrayOutputStream, context);
         } catch (IOException e) {
-            log.error("JXLS渲染模板文件失败！！！");
+            log.error("JXLS渲染模板文件失败！");
             e.printStackTrace();
         }
 

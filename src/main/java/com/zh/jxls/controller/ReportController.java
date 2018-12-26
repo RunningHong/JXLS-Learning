@@ -33,21 +33,52 @@ public class ReportController {
         PreviewUtil.previewHtml(params, response);
     }
 
+    @RequestMapping(value="/reportExport", method= RequestMethod.POST)
+    public void reportExport(HttpServletRequest request, HttpServletResponse response) {
+        ExportUtil.reportExport(request, response);
+    }
+
+
+
+
+
+
+
+
+
     /**
-     * 导出所有charts到Excel
+     * 导出charts到Excel
      * 前台需要传需要导出的图片信息
      * @author RunningHong at 2018/12/25 20:15
      */
-    @RequestMapping(value="/exportAllCharts",method= RequestMethod.POST)
-    public void exportAllCharts(HttpServletRequest request, HttpServletResponse response) {
-        JSONObject jsonObject = JSON.parseObject(request.getParameter("chartsJson"));
-        JSONArray chartsArray = jsonObject.getJSONArray("chartsJsonArray");
+    @RequestMapping(value="/exportCharts",method= RequestMethod.POST)
+    public void exportCharts(HttpServletRequest request, HttpServletResponse response) {
+        JSONObject jsonObject = JSON.parseObject(request.getParameter("exportParams"));
+
+
+        JSONArray chartsArray = jsonObject.getJSONArray("chartsArray");
 
         Map<String, Object> params = new HashMap<>();
         // 设置导出名称
         params.put("exportName", "统计图表");
 
         ExportUtil.exportChartToXls(params, chartsArray, response);
+    }
+
+    /**
+     * 合并导出，同时导出Excel信息和图表信息
+     * @author RunningHong at 2018/12/25 21:06
+     */
+    @RequestMapping(value="/mergeExport",method= RequestMethod.POST)
+    public void mergeExport(HttpServletRequest request, HttpServletResponse response) {
+        JSONObject jsonObject = JSON.parseObject(request.getParameter("exportParams"));
+        JSONArray chartsArray = jsonObject.getJSONArray("chartsArray");
+
+        Map<String, Object> params = new HashMap<>();
+        // 设置导出名称
+        params.put("exportName", "统计信息");
+
+        ExportUtil.exportMesAndChartToXls(params, chartsArray, response);
     }
 
     /**
@@ -58,8 +89,8 @@ public class ReportController {
      * @author RunningHong at 2018/12/19 21:18
      * @param exportType 导出类型，exportType为pdf导出pdf格式，其余导出excel格式
      */
-    @RequestMapping("/reportExport")
-    public void reportExport(HttpServletResponse response, String exportType) {
+    @RequestMapping("/reportMesExport")
+    public void reportMesExport(HttpServletResponse response, String exportType) {
         Map<String, Object> params = new HashMap<>();
 
         // 设置报表导出名称
@@ -73,6 +104,8 @@ public class ReportController {
             ExportUtil.exportMesToXls(params, response);
         }
     }
+
+
 
 
 

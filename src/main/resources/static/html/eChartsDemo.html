@@ -11,7 +11,10 @@
     <script src="/js/exportChart.js"></script>
 </head>
 <body>
-    <button onclick="exportChart(myChart)">导出</button>
+    <!--<button onclick="exportCharts(myChart, testChart)">导出所有charts</button>-->
+    <!--<button onclick="mergeExport(myChart, testChart)">合并导出信息</button>-->
+
+    <button onclick="reportExport()">测试</button>
 
     <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
     <div id="main" style="width: 600px;height:400px;"></div>
@@ -19,12 +22,10 @@
     <div>这里只是为了测试显示两个图表</div>
     <div id="test" style="width: 800px;height:500px;"></div>
 
-    <button onclick="exportAllCharts()">导出所有</button>
 
     <script type="text/javascript">
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('main'));
-
         var testChart = echarts.init(document.getElementById('test'));
 
         // 指定图表的配置项和数据
@@ -56,8 +57,12 @@
 
         // 使用刚指定的配置项和数据显示图表。
         myChart.setOption(option);
-
         testChart.setOption(option);
+
+
+        // 【重要】注册需要导出的统计图表
+        addExportCharts(myChart, testChart);
+
     </script>
 </body>
 </html>

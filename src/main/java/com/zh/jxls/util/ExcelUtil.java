@@ -28,7 +28,6 @@ public class ExcelUtil {
 
     static Logger log = LoggerFactory.getLogger(ExcelUtil.class);
 
-
     /**
      * 将03版Excel流保存到Excel文件
      * @author RunningHong
@@ -48,8 +47,7 @@ public class ExcelUtil {
     }
 
     /**
-     * 将图片的流is写入Excel的workbook
-     * 图片存放于Excel新建的一个sheet中
+     * 将图片的流is写入Excel的workbook,一张图片建立一个sheet
      * @author RunningHong
      * @date 2018/12/6 14:44
      * @param chartsArray 图片的JSONArray
@@ -65,8 +63,9 @@ public class ExcelUtil {
                 //画图的顶级管理器，一个sheet只能获取一个（一定要注意这点）
                 HSSFPatriarch patriarch = createSheet.createDrawingPatriarch();
 
-                // 设置图片坐标
-                HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 255, 255,(short) 1, 1, (short) 5, 8);
+                // 设置图片坐标即大小
+                HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 255, 255,
+                                                            (short) 1, 1, (short) 12, 28);
 
                 // 设置图片DONT_MOVE_AND_RESIZE
                 anchor.setAnchorType(ClientAnchor.AnchorType.byId(3));

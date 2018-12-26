@@ -32,9 +32,7 @@ public class FileUtil {
         String[] baseArray = base64Info.split("base64,");
 
         // 使用了Apache commons codec的包来解析Base64
-        byte[] picByteArr = Base64.decodeBase64(baseArray[1]);
-
-        return picByteArr;
+        return Base64.decodeBase64(baseArray[1]);
     }
 
     /**
@@ -42,10 +40,9 @@ public class FileUtil {
      * @author RunningHong at 2018/12/12 16:30
      * @param byteArr byte数组流
      * @param filePath 保存路径
-     * @return
      */
     public static void saveByteArrayToFile(byte[] byteArr, File filePath) {
-        OutputStream out = null;
+        OutputStream out;
         try {
             out = new FileOutputStream(filePath);
             out.write(byteArr);
@@ -58,8 +55,7 @@ public class FileUtil {
     /**
      * 获取文件的类型（扩展名）<br>
      * 如文件D:ddd.xls返回【.xls】
-     * @author RunningHong
-     * @date 2018/12/4 10:08
+     * @author RunningHong at 2018/12/4 10:08
      * @param file 文件
      * @return 文件扩展名
      */
@@ -70,16 +66,13 @@ public class FileUtil {
         String fileName = file.getName();
 
         // 获取文件的类型
-        String fileType = fileName.substring(fileName.lastIndexOf("."));
-        return fileType;
+        return fileName.substring(fileName.lastIndexOf("."));
     }
 
     /**
      * 生成文件路径
-     * @author RunningHong
-     * @date 2018/12/6 10:54
+     * @author RunningHong at 2018/12/6 10:54
      * @param filePath 需要生成的路径
-     * @return
      */
     public static void makeFilePath(String filePath) {
         File filePathFile = new File(filePath);

@@ -47,9 +47,7 @@ public class ExcelToHtmlUtil {
 
     /**
      * 使用poi将Excel文件流out转化为HTML，数据存储在os中
-     * 使用poi
-     * @author RunningHong
-     * @date 2018/12/3 16:59
+     * @author RunningHong at 2018/12/3 16:59
      */
     public static void excelStreamToHtmlStreamByPoi(InputStream is, OutputStream os) throws Exception {
         HSSFWorkbook workbook = new HSSFWorkbook(is);
